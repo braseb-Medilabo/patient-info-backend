@@ -1,0 +1,26 @@
+info:
+  name: createPatient
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8080/patient
+  body:
+    type: json
+    data: |2-
+        {
+        "lastName" : "coucoupost",
+        "firstName" : "yuyuyuyu",
+        "dateOfBirth" : "jlj",
+        "gender" : "M",
+        "address" : "kflkezlkfz",
+        "phoneNumber" : "4545545"  
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
