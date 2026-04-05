@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: medilabo
+  name: medilaboInfosPatient
 config:
   proxy:
     inherit: true
