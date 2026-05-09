@@ -1,5 +1,7 @@
 package com.medilab.infospatients.entitys;
 
+import com.medilab.infospatients.validator.ValidBirthDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class Patient {
     private String lastName;
     @Column(length = 10, nullable = false)
     @NotBlank(message = "date of birth is required")
+    @ValidBirthDate
     private String dateOfBirth;
     @Column(length = 10, nullable = false)
     @NotBlank(message = "gender is required")
