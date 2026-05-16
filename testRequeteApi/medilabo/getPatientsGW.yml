@@ -1,11 +1,11 @@
 info:
-  name: getPatients
+  name: getPatientsGW
   type: http
-  seq: 2
+  seq: 4
 
 http:
   method: GET
-  url: http://localhost:9000/patient/list
+  url: http://localhost:8080/api/v1/patient/list
   auth: inherit
 
 settings:
