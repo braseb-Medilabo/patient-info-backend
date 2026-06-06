@@ -6,7 +6,6 @@ info:
 http:
   method: GET
   url: http://localhost:9000/patient/list
-  auth: inherit
 
 settings:
   encodeUrl: true
