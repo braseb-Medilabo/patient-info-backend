@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.medilab.infospatients.entitys.Patient;
 import com.medilab.infospatients.services.PatientService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
@@ -24,6 +25,7 @@ public class PatientController {
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
+    
     
     @GetMapping("/patient/list")
     public ResponseEntity<Iterable<Patient>> getPatients() {
