@@ -160,6 +160,20 @@ Les opérations de création et de mise à jour utilisent **Jakarta Validation**
 
 ---
 
+## Sécurité
+
+Le service **Infos Patients** n'implémente aucun mécanisme d'authentification ou d'autorisation.
+
+La sécurité de l'application est assurée en amont par **l'API Gateway**, qui est responsable notamment de :
+
+* l'authentification des utilisateurs ;
+* la validation des jetons d'accès (JWT) ;
+* le contrôle des accès aux différents microservices.
+
+Ce microservice considère donc que toute requête reçue provient d'une source de confiance (la Gateway) et se concentre uniquement sur sa logique métier.
+
+---
+
 ## Documentation Swagger
 
 Chaque microservice MediLabo expose sa propre documentation **OpenAPI** grâce à SpringDoc.
