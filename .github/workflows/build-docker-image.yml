@@ -1,10 +1,17 @@
 name: Docker Image CI
+run-name: ${{ github.event_name == 'workflow_dispatch' && inputs.build_label || github.event.head_commit.message }}
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
+    inputs:
+      build_label:
+        description: 'Nom de ce build (optionnel)'
+        required: false
+        default: 'Build manuel'
+        type: string
+  
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
