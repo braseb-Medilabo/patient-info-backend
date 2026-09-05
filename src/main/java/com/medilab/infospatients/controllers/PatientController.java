@@ -70,7 +70,8 @@ public class PatientController {
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "Patient not found"
+            description = "Patient not found",
+            content = @Content
         )
     })
     public ResponseEntity<Patient> getPatient(
@@ -100,11 +101,24 @@ public class PatientController {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Invalid patient data"
+            description = "Invalid patient data",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                        type = "object",
+                        example = """
+                            {
+                              "message": "validation failed",
+                              "errors": {keys's errors}
+                            }
+                            """
+                    )
+                )
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "Patient not found"
+            description = "Patient not found",
+            content = @Content
         )
     })
     public ResponseEntity<Patient> updatePatient(
@@ -143,7 +157,19 @@ public class PatientController {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Invalid patient data"
+            description = "Invalid patient data",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(
+                        type = "object",
+                        example = """
+                            {
+                              "message": "validation failed",
+                              "errors": {keys's errors}
+                            }
+                            """
+                    )
+                )
         )
     })
     public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
@@ -157,7 +183,8 @@ public class PatientController {
             description = "Deletes a patient using their unique identifier."
         )
     @ApiResponse(
-        responseCode = "204"
+        responseCode = "204",
+        content = @Content
     )
     public ResponseEntity<?> deletePatient(
             @Parameter(
