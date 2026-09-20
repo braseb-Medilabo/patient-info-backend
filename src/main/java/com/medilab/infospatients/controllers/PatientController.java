@@ -1,6 +1,8 @@
 package com.medilab.infospatients.controllers;
 
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.medilab.infospatients.entitys.Patient;
+import com.medilab.infospatients.exception.MessageError;
 import com.medilab.infospatients.services.PatientService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,19 +74,27 @@ public class PatientController {
         @ApiResponse(
             responseCode = "404",
             description = "Patient not found",
-            content = @Content
+            content = @Content(
+                                mediaType = "application/json",
+                                schema = @Schema(implementation = MessageError.class)
+            )
         )
     })
-    public ResponseEntity<Patient> getPatient(
+    public ResponseEntity<?> getPatient(
             @Parameter(
                     description = "Unique identifier of the patient",
                     example = "1"
             )
             @PathVariable Integer id) {
-        return patientService.getPatientById(id)
-                .map(patient -> ResponseEntity.ok(patient))
-                .orElse(ResponseEntity.notFound().build());
-    }
+        
+        Optional<Patient> existingPatient = patientService.getPatientById(id);
+        
+        if (existingPatient.isEmpty()) {
+            return new ResponseEntity<>(new MessageError("Patient not found"), HttpStatus.NOT_FOUND);
+        }
+        
+        return ResponseEntity.ok(existingPatient.get());
+     }
     
     @PutMapping("/patient/{id}")
     @Operation(
@@ -105,40 +116,43 @@ public class PatientController {
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(
-                        type = "object",
-                        example = """
-                            {
-                              "message": "validation failed",
-                              "errors": {keys's errors}
-                            }
-                            """
+                        implementation = MessageError.class
                     )
-                )
+            )
         ),
         @ApiResponse(
             responseCode = "404",
             description = "Patient not found",
-            content = @Content
+            content = @Content(
+                                mediaType = "application/json",
+                                schema = @Schema(implementation = MessageError.class)
+            )
         )
     })
-    public ResponseEntity<Patient> updatePatient(
+    public ResponseEntity<?> updatePatient(
             @Parameter(
                     description = "Unique identifier of the patient",
                     example = "1"
             )
             @PathVariable Integer id,
             @Valid @RequestBody Patient patient){
-                return  patientService.getPatientById(id)
-                                    .map(p -> {
-                                                p.setLastName(patient.getLastName());
-                                                p.setFirstName(patient.getFirstName());
-                                                p.setAddress(patient.getAddress());
-                                                p.setDateOfBirth(patient.getDateOfBirth());
-                                                p.setGender(patient.getGender());
-                                                p.setPhoneNumber(patient.getPhoneNumber());
-                                                return ResponseEntity.accepted().body(patientService.save(p));
-                                    })
-                                    .orElse(ResponseEntity.notFound().build());
+                
+        Optional<Patient> existingPatient = patientService.getPatientById(id);
+        
+        if (existingPatient.isEmpty()) {
+            return new ResponseEntity<>(new MessageError("Patient not found"), HttpStatus.NOT_FOUND);
+        }
+    
+        Patient patientUpdated = existingPatient.get();
+        patientUpdated.setLastName(patient.getLastName());
+        patientUpdated.setFirstName(patient.getFirstName());
+        patientUpdated.setAddress(patient.getAddress());
+        patientUpdated.setDateOfBirth(patient.getDateOfBirth());
+        patientUpdated.setGender(patient.getGender());
+        patientUpdated.setPhoneNumber(patient.getPhoneNumber());
+        
+        return ResponseEntity.accepted().body(patientService.save(patientUpdated));
+ 
     }
     
     @PostMapping("/patient")
@@ -159,17 +173,11 @@ public class PatientController {
             responseCode = "400",
             description = "Invalid patient data",
             content = @Content(
-                    mediaType = "application/json",
-                    schema = @Schema(
-                        type = "object",
-                        example = """
-                            {
-                              "message": "validation failed",
-                              "errors": {keys's errors}
-                            }
-                            """
-                    )
-                )
+                                mediaType = "application/json",
+                                schema = @Schema(
+                                       implementation = MessageError.class
+                                )
+            )
         )
     })
     public ResponseEntity<Patient> createPatient(@Valid @RequestBody Patient patient) {
